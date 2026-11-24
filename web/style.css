@@ -1,0 +1,571 @@
+@font-face {
+    font-family: 'vazir-bold';
+    src: url("/Fonts/Vazirmatn-Bold.ttf");
+}
+@font-face {
+    font-family: 'vazir-medium';
+    src: url("/Fonts/Vazirmatn-Medium.ttf");
+}
+@font-face {
+    font-family: 'vazir-regular';
+    src: url("/Fonts/Vazirmatn-Regular.ttf");
+}
+@font-face {
+    font-family: 'vazir-thin';
+    src: url("/Fonts/Vazirmatn-Thin.ttf");
+}
+
+:root {
+  --bg-color: #1a1a1a;
+  --grid-color: rgba(255, 255, 255, 0.02);
+  --grid-color-bold: rgba(255, 255, 255, 0.04);
+  --cross-color-small: rgba(255, 255, 255, 0.016);
+  --cross-color-large: rgba(255, 255, 255, 0.22);
+
+  --grid-size: 50px;
+  --bold-every: 3;
+  --cross-size-small: 5px;
+  --cross-size-large: 8px;
+  --cross-thickness: 1px;
+
+
+  --scroll-speed: 0.06;
+  --twinkle-min: 0.1;
+  --twinkle-max: 1.0;
+  --twinkle-speed: 0.0008;
+
+  /* Glass surfaces that sit on top of the animated background */
+  --text: #e9eaee;
+  --text-dim: #9aa3ad;
+  --line: rgba(255, 255, 255, 0.1);
+  --line-soft: rgba(255, 255, 255, 0.06);
+  --surface: rgba(255, 255, 255, 0.045);
+  --surface-strong: rgba(255, 255, 255, 0.075);
+  --accent: #5eb3d8;
+  --accent-soft: rgba(94, 179, 216, 0.18);
+  --accent-line: rgba(94, 179, 216, 0.45);
+  --card-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+body {
+    font-family: "vazir-medium", sans-serif;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: var(--bg-color);
+    color: var(--text);
+    color-scheme: dark;
+    -webkit-font-smoothing: antialiased;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+#background {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  display: block;
+}
+body::-webkit-scrollbar {
+    width: 10px;
+}
+body::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.18);
+}
+body::-webkit-scrollbar-track {
+    background: transparent;
+}
+.container {
+    position: relative;
+    padding: 10px 25px;
+}
+
+img {
+    max-width: 100%;
+    object-fit: cover;
+}
+
+/* Shared form controls: dark glass on the animated background */
+input,
+select,
+button {
+    font: inherit;
+    color: var(--text);
+    box-sizing: border-box;
+}
+
+input,
+select {
+    min-width: 0;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.28);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+    transition: border-color 180ms ease, box-shadow 180ms ease,
+                background-color 180ms ease;
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.32);
+}
+
+input:hover,
+select:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(0, 0, 0, 0.38);
+    box-shadow: 0 0 0 3px var(--accent-soft), inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+button {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 9px 16px;
+    background: linear-gradient(180deg, #2f3338, #202327);
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transition: border-color 180ms ease, background 180ms ease,
+                box-shadow 180ms ease, transform 120ms ease;
+}
+
+button:hover {
+    border-color: var(--accent-line);
+    background: linear-gradient(180deg, #34393f, #23272b);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08),
+                0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+button:active {
+    transform: translateY(1px) scale(0.99);
+}
+
+button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+button:disabled {
+    opacity: 0.55;
+    cursor: progress;
+}
+
+#inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+#inputs input {
+    width: 100%;
+    text-align: center;
+}
+
+#panel-default > .container {
+    margin-bottom: 16px;
+    padding: 18px 22px;
+    border: 1px solid var(--line-soft);
+    border-radius: 18px;
+    background: linear-gradient(160deg, var(--surface-strong), var(--surface));
+    box-shadow: var(--card-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+/* Tabs UI */
+.tabs {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    /*margin-top: 35px;*/
+    padding: 6px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(23, 23, 23, 0.62);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+.tabs .tab {
+    position: relative;
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 22px;
+    background: transparent;
+    color: #a3a3a3;
+    font: inherit;
+    cursor: pointer;
+    transition: color 220ms ease, background-color 220ms ease,
+                transform 220ms ease, box-shadow 220ms ease;
+}
+
+.tabs .tab:hover {
+    color: #fff;
+    background: #252525;
+}
+
+.tabs .tab:active {
+    transform: scale(.96);
+}
+
+.tabs .tab.is-active {
+    color: #fff;
+    background: #303030;
+    box-shadow: 0 2px 10px rgb(0 0 0 / 18%);
+}
+
+.tabs .tab:focus-visible {
+    outline: 2px solid #5eb3d8;
+    outline-offset: 3px;
+}
+
+.tab-panels {
+    position: relative;
+    margin-top: 18px;
+}
+
+.tab-panel[hidden] {
+    display: none;
+}
+
+.tab-panel.is-active {
+    animation: tab-enter 320ms cubic-bezier(.2, .75, .25, 1) both;
+}
+
+@keyframes tab-enter {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tabs .tab,
+    .tab-panel.is-active {
+        transition: none;
+        animation: none;
+    }
+}
+
+h1{
+    text-align: center;
+}
+
+.windrose .wrapper{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+}
+.windrose .wrapper > div{
+    position: relative;
+    isolation: isolate;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: linear-gradient(160deg,
+                rgba(255, 255, 255, 0.085),
+                rgba(255, 255, 255, 0.02) 45%,
+                rgba(255, 255, 255, 0.05));
+    box-shadow: var(--card-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px) saturate(130%);
+    -webkit-backdrop-filter: blur(18px) saturate(130%);
+    transition: border-color 300ms ease, box-shadow 300ms ease,
+                transform 300ms ease;
+}
+.windrose .wrapper > div:hover{
+    border-color: var(--accent-line);
+    transform: translateY(-2px);
+    box-shadow: 0 22px 50px rgba(0, 0, 0, 0.55),
+                0 0 0 1px var(--accent-soft),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+/* Slow aurora glow inside each card; kept under the content */
+.windrose .wrapper > div::before{
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(45% 60% at 18% 12%, rgba(94, 179, 216, 0.22), transparent 70%),
+        radial-gradient(50% 65% at 88% 88%, rgba(140, 110, 255, 0.16), transparent 72%);
+    opacity: 0.5;
+    animation: windrose-aurora 16s ease-in-out infinite alternate;
+}
+@keyframes windrose-aurora {
+    from {
+        opacity: 0.38;
+        transform: translate3d(-3%, -2%, 0) scale(1);
+    }
+    to {
+        opacity: 0.68;
+        transform: translate3d(3%, 3%, 0) scale(1.1);
+    }
+}
+.windrose .wrapper > *{
+    overflow: hidden;
+    border-radius: 18px;
+}
+.windrose .wrapper .view{
+    padding: 12px;
+}
+.windrose .wrapper .view img{
+    width: 100%;
+    border-radius: 12px;
+    cursor: zoom-in;
+}
+.windrose .view-expand{
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: 10px;
+    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(12, 14, 16, 0.55);
+    color: var(--text);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    opacity: 0.75;
+    transition: opacity 180ms ease, border-color 180ms ease,
+                background-color 180ms ease, transform 120ms ease;
+}
+.windrose .view-expand:hover{
+    opacity: 1;
+    border-color: var(--accent);
+    background: rgba(12, 14, 16, 0.75);
+}
+.windrose .view-expand:active{
+    transform: scale(0.95);
+}
+
+/* Full-screen viewer for the wind rose image */
+.lightbox{
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    padding: 4vh 4vw;
+    background: rgba(8, 10, 12, 0.86);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    animation: lightbox-in 180ms ease both;
+}
+.lightbox[hidden]{
+    display: none;
+}
+.lightbox img{
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+    cursor: zoom-in;
+    user-select: none;
+    -webkit-user-drag: none;
+    touch-action: none;
+    will-change: transform;
+}
+.lightbox img.is-zoomed{
+    cursor: grab;
+}
+.lightbox img.is-dragging{
+    cursor: grabbing;
+}
+.lightbox-hint{
+    position: absolute;
+    right: 0;
+    bottom: 16px;
+    left: 0;
+    margin: 0;
+    text-align: center;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.42);
+    pointer-events: none;
+}
+.lightbox-close{
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 16px;
+    line-height: 1;
+}
+body.lightbox-open{
+    overflow: hidden;
+}
+@keyframes lightbox-in{
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* ---- Wind rose tab (scoped; other tabs untouched) ---- */
+.windrose .info {
+    border: 0;
+    padding: 20px;
+}
+.windrose .info h2 {
+    margin: 0 0 14px;
+    font-size: 1.1rem;
+    letter-spacing: 0.2px;
+}
+.windrose .field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 12px;
+}
+.windrose .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.windrose .field label {
+    font-size: .8rem;
+    color: var(--text-dim);
+}
+.windrose input,
+.windrose select {
+    font: inherit;
+    min-width: 0;
+}
+.windrose select option {
+    background: #141618;
+    color: var(--text);
+}
+.windrose button {
+    width: 100%;
+    padding: 11px 16px;
+    border-color: rgba(94, 179, 216, 0.4);
+    background: linear-gradient(180deg,
+                rgba(94, 179, 216, 0.3),
+                rgba(94, 179, 216, 0.14));
+    color: #eaf6fb;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12),
+                0 6px 18px rgba(0, 0, 0, 0.3);
+}
+.windrose button:hover {
+    border-color: var(--accent);
+    background: linear-gradient(180deg,
+                rgba(94, 179, 216, 0.42),
+                rgba(94, 179, 216, 0.2));
+}
+.windrose button:disabled {
+    opacity: .55;
+    cursor: progress;
+}
+.windrose .manual {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line-soft);
+}
+.windrose .manual summary {
+    margin-bottom: 12px;
+    font-size: .9rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 180ms ease;
+}
+.windrose .manual summary:hover {
+    color: var(--text);
+}
+.windrose .wrapper .view img {
+    display: block;
+    height: auto;
+    object-fit: contain;
+}
+.windrose-status {
+    margin: 14px 0 0;
+    font-size: .88rem;
+    color: var(--text-dim);
+}
+.windrose-status[data-kind="error"] { color: #ff8a80; }
+.windrose-status[data-kind="ok"]    { color: #6fe0a8; }
+.windrose-status[data-kind="warn"]  { color: #f0c36d; }
+.windrose-status:empty,
+.windrose-warning:empty {
+    display: none;
+}
+.windrose-warning {
+    margin: 8px 0 0;
+    padding: 8px 10px;
+    border: 1px solid rgba(240, 195, 109, 0.4);
+    border-radius: 10px;
+    background: rgba(240, 195, 109, 0.1);
+    color: #f5cf8a;
+    font-size: .85rem;
+}
+.windrose .stats {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line-soft);
+}
+.windrose .stats:empty {
+    display: none;
+}
+.windrose .stats h3 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+}
+.windrose .stat-row {
+    display: grid;
+    grid-template-columns: minmax(78px, .8fr) 1.2fr;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+    font-size: .84rem;
+}
+.windrose .stat-row:last-child {
+    border-bottom: 0;
+}
+.windrose .stat-label {
+    color: var(--text-dim);
+}
+.windrose .stat-value {
+    unicode-bidi: plaintext;
+    text-align: start;
+}
+@media (max-width: 900px) {
+    .windrose .wrapper {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .windrose .wrapper > div::before {
+        animation: none;
+    }
+    .windrose .wrapper > div,
+    .windrose button,
+    .windrose .manual summary {
+        transition: none;
+    }
+    .windrose .wrapper > div:hover {
+        transform: none;
+    }
+    .lightbox {
+        animation: none;
+    }
+}

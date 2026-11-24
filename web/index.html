@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>پروژه من</title>
+  <link rel="stylesheet" href="normalize.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="jquery-4.1.0.min.js"></script>
+</head>
+<body id="app">
+    <canvas id="background"></canvas>
+    <header></header>
+
+    <div class="container">
+        <div class="tabs" role="tablist" aria-label="بخش‌های برنامه">
+            <button class="tab is-active" id="tab-default" type="button"
+                    role="tab" aria-selected="true" aria-controls="panel-default">
+                Default
+            </button>
+            <button class="tab" id="tab-windrose" type="button"
+                    role="tab" aria-selected="false" aria-controls="panel-windrose">
+                گلباد
+            </button>
+        </div>
+
+        <div class="tab-panels">
+            <section class="tab-panel is-active" id="panel-default"
+                     role="tabpanel" aria-labelledby="tab-default">
+                <!-- هر المانی که data-bind داشته باشد، پایتون با show(نام=مقدار) آن را عوض می‌کند -->
+                <div class="container">
+                    <h1 data-bind="title"></h1>
+                    <p data-bind="description"></p>
+                    <img data-bind="logo" alt="">
+                </div>
+
+                <div class="container">
+                    <h3>۱۰ عدد وارد کن</h3>
+                    <div id="inputs"></div>
+                    <button id="sum-btn">جمع بزن</button>
+
+                    <p>نتیجه: <b data-bind="result">—</b></p>
+                    <p data-bind="status"></p>
+
+                    <input type="number" id="p3num">
+                    <button id="p3">+ 3</button>
+                    <p data-bind="p3e">res: </p>
+                </div>
+            </section>
+
+            <section class="tab-panel" id="panel-windrose"
+                     role="tabpanel" aria-labelledby="tab-windrose" hidden>
+                <div class="container windrose">
+                    <h1>گلباد</h1>
+                    <div class="wrapper">
+                        <div class="view">
+                            <img data-bind="windrose_image" src="/logo.png" alt="گلباد">
+                            <button type="button" class="view-expand" id="wr-expand"
+                                    aria-label="نمایش تمام‌صفحهٔ گلباد" title="تمام‌صفحه">
+                                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                    <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"
+                                          fill="none" stroke="currentColor" stroke-width="2"
+                                          stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="info">
+                            <h2>شهرهای ایران</h2>
+                            <div class="field">
+                                <label for="wr-city">شهر</label>
+                                <select id="wr-city"></select>
+                            </div>
+                            <div class="field-row">
+                                <div class="field">
+                                    <label for="wr-city-start">از تاریخ</label>
+                                    <input type="date" id="wr-city-start">
+                                </div>
+                                <div class="field">
+                                    <label for="wr-city-end">تا تاریخ</label>
+                                    <input type="date" id="wr-city-end">
+                                </div>
+                            </div>
+                            <button type="button" id="wr-city-btn">رسم گلباد</button>
+
+                            <details class="manual">
+                                <summary>ورود دستی مختصات</summary>
+                                <div class="field">
+                                    <label for="wr-name">نام (اختیاری)</label>
+                                    <input type="text" id="wr-name" placeholder="مثلاً ایستگاه من">
+                                </div>
+                                <div class="field-row">
+                                    <div class="field">
+                                        <label for="wr-lat">عرض جغرافیایی</label>
+                                        <input type="text" inputmode="decimal" id="wr-lat" placeholder="35.6892">
+                                    </div>
+                                    <div class="field">
+                                        <label for="wr-lon">طول جغرافیایی</label>
+                                        <input type="text" inputmode="decimal" id="wr-lon" placeholder="51.3890">
+                                    </div>
+                                </div>
+                                <div class="field-row">
+                                    <div class="field">
+                                        <label for="wr-custom-start">از تاریخ</label>
+                                        <input type="date" id="wr-custom-start">
+                                    </div>
+                                    <div class="field">
+                                        <label for="wr-custom-end">تا تاریخ</label>
+                                        <input type="date" id="wr-custom-end">
+                                    </div>
+                                </div>
+                                <button type="button" id="wr-custom-btn">رسم گلباد دستی</button>
+                            </details>
+
+                            <p class="windrose-status" data-bind="windrose_status" role="status" aria-live="polite">شهر و بازه را انتخاب کنید، سپس دکمهٔ رسم را بزنید.</p>
+                            <p class="windrose-warning" data-bind="windrose_warning" role="alert"></p>
+                            <div class="stats" id="wr-stats" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="lightbox" id="wr-lightbox" hidden>
+        <img id="wr-lightbox-img" alt="گلباد" draggable="false">
+        <p class="lightbox-hint">با اسکرول بزرگ و کوچک کنید، برای جابه‌جایی بکشید</p>
+        <button type="button" class="lightbox-close" id="wr-lightbox-close"
+                aria-label="بستن نمایش تمام‌صفحه">✕</button>
+    </div>
+
+    <footer></footer>
+    <script src="bridge.js"></script>
+    <script src="app.js"></script>
+    <script src="anim.js"></script>
+
+
+    <script>
+        (() => {
+            const tabs = document.querySelectorAll(".tabs .tab");
+            const panels = document.querySelectorAll(".tab-panel");
+
+            tabs.forEach((tab) => {
+                tab.addEventListener("click", () => {
+                    const targetId = tab.getAttribute("aria-controls");
+
+                    tabs.forEach((item) => {
+                        const selected = item === tab;
+                        item.classList.toggle("is-active", selected);
+                        item.setAttribute("aria-selected", String(selected));
+                    });
+
+                    panels.forEach((panel) => {
+                        const selected = panel.id === targetId;
+                        panel.hidden = !selected;
+                        panel.classList.toggle("is-active", selected);
+                    });
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
