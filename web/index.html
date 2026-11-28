@@ -21,6 +21,10 @@
                     role="tab" aria-selected="false" aria-controls="panel-windrose">
                 گلباد
             </button>
+            <button class="tab" id="tab-windspeed" type="button"
+                    role="tab" aria-selected="false" aria-controls="panel-windspeed">
+                نمودار سرعت
+            </button>
         </div>
 
         <div class="tab-panels">
@@ -49,7 +53,7 @@
 
             <section class="tab-panel" id="panel-windrose"
                      role="tabpanel" aria-labelledby="tab-windrose" hidden>
-                <div class="container windrose">
+                <div class="container chart-panel windrose">
                     <h1>گلباد</h1>
                     <div class="wrapper">
                         <div class="view">
@@ -113,6 +117,100 @@
                             <p class="windrose-status" data-bind="windrose_status" role="status" aria-live="polite">شهر و بازه را انتخاب کنید، سپس دکمهٔ رسم را بزنید.</p>
                             <p class="windrose-warning" data-bind="windrose_warning" role="alert"></p>
                             <div class="stats" id="wr-stats" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="tab-panel" id="panel-windspeed"
+                     role="tabpanel" aria-labelledby="tab-windspeed" hidden>
+                <div class="container chart-panel windspeed">
+                    <h1>نمودار سرعت باد</h1>
+                    <div class="wrapper">
+                        <!-- View: two charts toggled by a radio selector -->
+                        <div class="view">
+                            <div class="chart-switch" role="radiogroup" aria-label="انتخاب نمودار">
+                                <input class="chart-radio" type="radio" name="ws-chart"
+                                       id="ws-chart-1" checked>
+                                <label class="chart-option" for="ws-chart-1">نمودار ۱</label>
+                                <input class="chart-radio" type="radio" name="ws-chart"
+                                       id="ws-chart-2">
+                                <label class="chart-option" for="ws-chart-2">نمودار ۲</label>
+                            </div>
+                            <div class="chart-stage">
+                                <img class="chart-img chart-img-1" id="ws-chart-img-1"
+                                     data-bind="windspeed_image_1" src="/logo.png"
+                                     alt="نمودار سرعت باد ۱">
+                                <img class="chart-img chart-img-2" id="ws-chart-img-2"
+                                     data-bind="windspeed_image_2" src="/logo.png"
+                                     alt="نمودار سرعت باد ۲">
+                            </div>
+                        </div>
+
+                        <!-- Info: grouped numeric inputs plus the calculate action -->
+                        <div class="info">
+                            <h2>تنظیمات نمودار سرعت باد</h2>
+
+                            <!-- Group 1: initial values -->
+                            <fieldset class="group">
+                                <legend>مقادیر اولیه</legend>
+                                <div class="field-row">
+                                    <div class="field">
+                                        <label for="ws-initial-height">ارتفاع اولیه</label>
+                                        <div class="input-unit">
+                                            <input type="number" id="ws-initial-height"
+                                                   name="ws-initial-height" step="any" min="0"
+                                                   placeholder="0" required>
+                                            <span class="unit">m</span>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label for="ws-initial-speed">سرعت باد اولیه</label>
+                                        <div class="input-unit">
+                                            <input type="number" id="ws-initial-speed"
+                                                   name="ws-initial-speed" step="any" min="0"
+                                                   placeholder="0" required>
+                                            <span class="unit">m/s</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- Group 2: height configuration -->
+                            <fieldset class="group">
+                                <legend>تنظیمات ارتفاع</legend>
+                                <div class="field">
+                                    <label for="ws-height-step">فاصلهٔ بین ارتفاعات</label>
+                                    <div class="input-unit">
+                                        <input type="number" id="ws-height-step"
+                                               name="ws-height-step" step="any" min="0.1"
+                                               placeholder="10" required>
+                                        <span class="unit">m</span>
+                                    </div>
+                                </div>
+                                <div class="field-row">
+                                    <div class="field">
+                                        <label for="ws-height-start">ارتفاع شروع</label>
+                                        <div class="input-unit">
+                                            <input type="number" id="ws-height-start"
+                                                   name="ws-height-start" step="any" min="0"
+                                                   placeholder="10" required>
+                                            <span class="unit">m</span>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label for="ws-height-end">ارتفاع پایان</label>
+                                        <div class="input-unit">
+                                            <input type="number" id="ws-height-end"
+                                                   name="ws-height-end" step="any" min="0"
+                                                   placeholder="100" required>
+                                            <span class="unit">m</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <!-- Placeholder: the calculation handler will be wired up here -->
+                            <button type="button" class="calc-btn" id="ws-calc-btn">محاسبه</button>
                         </div>
                     </div>
                 </div>
